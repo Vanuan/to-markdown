@@ -48,6 +48,8 @@
       }
       return result;
     };
+
+    return this;
   };
   
   var process = function(input, $) {
@@ -59,11 +61,6 @@
     var $container = $('<div/>');
     var $input = $container.html(input);
 
-    // Remove whitespace
-    $input.find('*:not(pre, code)').contents().filter(function() {
-      return this.nodeType === 3 && (/^\s+|\s+$/.test(this.nodeValue));
-    }).remove();
-    
     var selectors = [];
     for(var i = 0, len = ELEMENTS.length; i < len; i++) {
       selectors.push(ELEMENTS[i].selector);
@@ -78,7 +75,8 @@
 
         $matches.each(function(j, el) {
           var $el = $(el);
-          $el.replaceWith(ELEMENTS[i].replacement($el.html(), $el));
+          var replacement = ELEMENTS[i].replacement($el.html(), $el);
+          el.outerHTML = replacement;
         });
       }
     }
@@ -219,6 +217,12 @@
           $el.unwrap();
         }
         return prefix + innerHTML + suffix + '\n';
+      }
+    },
+    {
+      selector: 'ul',
+      replacement: function(innerHTML, el) {
+        return innerHTML ? '\n\n' + innerHTML + '\n\n' : '';
       }
     },
     {
