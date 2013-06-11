@@ -222,6 +222,7 @@
     {
       selector: 'ul',
       replacement: function(innerHTML, el) {
+        innerHTML = innerHTML.replace('/\n/g', '\n '); // multilayer lists
         return innerHTML ? '\n\n' + innerHTML + '\n\n' : '';
       }
     },
